@@ -23,11 +23,11 @@ static int	eating(t_philo *p)
 {
 	pthread_mutex_lock(&(p->left->mutex));
 	p->left->status = 1;
-	if (print_status(p, LEFTTAKING) == DEAD)
+	if (print_status(p, TAKING) == DEAD)
 		return (dead(p));
 	pthread_mutex_lock(&(p->right->mutex));
 	p->right->status = 1;
-	if (print_status(p, RIGHTTAKING) == DEAD)
+	if (print_status(p, TAKING) == DEAD)
 		return (dead(p));
 	p->eat_time = get_time();
 	if (print_status(p, EATING) == DEAD)
