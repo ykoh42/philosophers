@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_one.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykoh <ykoh@student.42seoul.kr>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/15 06:09:31 by ykoh              #+#    #+#             */
+/*   Updated: 2021/03/15 06:09:32 by ykoh             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef PHILO_ONE_H
 # define PHILO_ONE_H
 
@@ -25,8 +37,8 @@ typedef struct		s_table {
 	time_t			time_to_eat;
 	time_t			time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
-	time_t			genesis;
 	int				end;
+	time_t			genesis;
 	pthread_mutex_t	print;
 }					t_table;
 
@@ -39,7 +51,7 @@ typedef struct		s_philo {
 	int				index;
 	int				cnt;
 	time_t			eat_time;
-	pthread_t 		thread;
+	pthread_t		thread;
 	t_fork			*left;
 	t_fork			*right;
 }					t_philo;

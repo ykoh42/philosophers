@@ -61,7 +61,7 @@ void		dead_or_alive(void *arg)
 			print_status(NULL, END);
 			break ;
 		}
-		usleep(10000 / g_table.number_of_philosophers);
+		ft_msleep(10 / g_table.number_of_philosophers);
 		i++;
 	}
 	free(finish);

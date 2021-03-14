@@ -1,28 +1,30 @@
 SRCS		=	main.c\
-				ft_atoi.c\
-				ft_calloc.c\
-				get_time.c\
-				lifecycle.c\
-				dead_or_alive.c
+			ft_atoi.c\
+			ft_calloc.c\
+			ft_msleep.c\
+			get_time.c\
+			lifecycle.c\
+			dead_or_alive.c\
+			print_status.c
 
 OBJS		=	$(SRCS:.c=.o)
 				
 NAME		=	philo_one
-RM			=	rm -f
-CC			=	gcc
+RM		=	rm -f
+CC		=	gcc
 CFLAGS		=	-Wall -Wextra -Werror
 
-$(NAME) :	$(OBJS)
+$(NAME) 	:	$(OBJS)
 			$(CC) $(CFLAGS) $^ -o $@
 
 all		:	$(NAME)
 
-clean	:	
+clean		:
 			$(RM) $(OBJS)
 
-fclean	:	clean
+fclean		:	clean
 			$(RM) $(NAME)
 
 re		:	fclean all
 
-.PHONY	:	all clean fclean re
+.PHONY		:	all clean fclean re
