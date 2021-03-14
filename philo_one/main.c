@@ -1,136 +1,20 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykoh <ykoh@student.42seoul.kr>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/15 05:43:44 by ykoh              #+#    #+#             */
+/*   Updated: 2021/03/15 05:43:45 by ykoh             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "philo_one.h"
 
-// void	putdown(t_fork *left, t_philo *p, t_fork *right)
-// {
-// 	pthread_mutex_lock(&(right->mutex));
-// 	pthread_mutex_lock(&(left->mutex));
-// 	if (left->status == 1 && right->status == 1)
-// 	{
-// 		left->status = 0;
-// 		p->left = 0;
-
-
-// 	}
-// 	pthread_mutex_unlock(&(right->mutex));
-// 	pthread_mutex_unlock(&(left->mutex));
-// 	// 홀수면 왼쪽 들고 짝수면 오른쪽 들고
-// 	if (p->index % 2)
-// 	{
-// 		pthread_mutex_lock(&(right->mutex));
-// 		if (right->status == 0)
-// 		{
-// 			right->status = 1;
-// 			p->right = 1;
-// 		}
-// 		pthread_mutex_unlock(&(right->mutex));
-// 		pthread_mutex_lock(&(left->mutex));
-// 		if (right->status == 1 && left->status == 0)
-// 		{
-// 			left->status = 1;
-// 			p->left = 1;
-// 		}
-// 		pthread_mutex_unlock(&(left->mutex));
-// 	}
-// 	else
-// 	{
-// 		pthread_mutex_lock(&(left->mutex));
-// 		if (left->status == 0)
-// 		{
-// 			left->status = 1;
-// 			p->left = 1;
-// 		}
-// 		pthread_mutex_unlock(&(left->mutex));
-// 		pthread_mutex_lock(&(right->mutex));
-// 		if (left->status == 1 && right->status == 0)
-// 		{
-// 			right->status = 1;
-// 			p->right = 1;
-// 		}
-// 		pthread_mutex_unlock(&(right->mutex));
-// 	}
-// }
-
-void	eating(t_philo *p)
+static void		destroy(t_fork *f, t_philo *p)
 {
-	if (p->left->status == 1 && p->right->status == 1)
-	{
-		pthread_mutex_lock(&(g_table.status));
-		printf("timestamp_in_ms %d is eating\n", p->index); // 뮤텍스 걸어야할듯
-		pthread_mutex_unlock(&(g_table.status));
-	}
-}
-
-void	pickup(t_philo *p)
-{
-	// 홀수면 왼쪽 들고 짝수면 오른쪽 들고
-	if (p->index % 2)
-	{
-		// 왼쪽
-		pthread_mutex_lock(&(p->left->mutex));
-		if (p->left->status == 0)
-		{
-			p->left->status = 1;
-			printf("philo %d picked left\n", p->index);
-		}
-		pthread_mutex_unlock(&(p->left->mutex));
-
-		// 오른쪽
-		pthread_mutex_lock(&(p->right->mutex));
-		if (p->left->status == 1 && p->right->status == 0)
-		{
-			p->right->status = 1;
-			printf("philo %d picked right\n", p->index);
-		}
-		pthread_mutex_unlock(&(p->right->mutex));
-	}
-	else
-	{
-		// 오른쪽
-		pthread_mutex_lock(&(p->right->mutex));
-		if (p->right->status == 0)
-		{
-			p->right->status = 1;
-			printf("philo %d picked right\n", p->index);
-		}
-		pthread_mutex_unlock(&(p->right->mutex));
-
-		// 왼쪽
-		pthread_mutex_lock(&(p->left->mutex));
-		if (p->right->status == 1 && p->left->status == 0)
-		{
-			p->left->status = 1;
-			printf("philo %d picked left\n", p->index);
-		}
-		pthread_mutex_unlock(&(p->left->mutex));
-	}
-}
-
-void	*lifecycle(void	*philo)
-{
-	t_philo *p;
-
-	p = philo;
-
-	while (1)
-	{
-		pickup(p);
-		eating(p);
-	// 	putdown(&(g_table.f[left]), p, &(g_table.f[right]));
-	// // // 	// sleeping();
-	// // // 	// thinking();
-	// // // 	if (p->dead)
-	// // // 	{
-	// // // 		printf("phillo %d -> died\n", p->index);
-	// // // 		break ;
-	// // // 	}
-
-	}
-	return (0);
-}
-
-void	destroy_philo(t_philo *p)
-{
-	int i;
+	int	i;
 
 	i = 0;
 	while (i < g_table.number_of_philosophers)
@@ -140,74 +24,91 @@ void	destroy_philo(t_philo *p)
 	}
 	free(p);
 	p = NULL;
-}
-
-void	destroy_table(t_table *table)
-{
-	int i;
-
-	pthread_mutex_destroy(&(g_table.status));
 	i = 0;
-	while (i < table->number_of_philosophers)
+	while (i < g_table.number_of_philosophers)
 	{
-		pthread_mutex_destroy(&(table->f[i].mutex));
+		pthread_mutex_destroy(&(f[i].mutex));
 		i++;
 	}
-	free(table->f);
+	free(f);
+	f = NULL;
+	pthread_mutex_destroy(&(g_table.print));
 }
 
-void	init_table(t_table *table, int argc, char *argv[])
+static t_philo	*init_philo(t_fork *f)
 {
-	int	i;
-
-	table->number_of_philosophers = ft_atoi(argv[1]);
-	table->time_to_die = ft_atoi(argv[2]);
-	table->time_to_eat = ft_atoi(argv[3]);
-	table->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 6)
-		table->number_of_times_each_philosopher_must_eat = ft_atoi(argv[5]);
-	else
-		table->number_of_times_each_philosopher_must_eat = -1;
-	table->f = ft_calloc(table->number_of_philosophers, sizeof(t_fork));
-	i = 0;
-	while (i < table->number_of_philosophers)
-	{
-		pthread_mutex_init(&(table->f[i].mutex), NULL);
-
-		i++;
-	}
-	pthread_mutex_init(&(g_table.status), NULL);
-}
-
-int		main(int argc, char *argv[])
-{
-	t_philo	*p;
 	int		i;
+	t_philo	*p;
 
-	if (!(argc == 5 || argc == 6))
-	{
-		write(2, "error\n", 6);
-		return (1);
-	}
-	init_table(&g_table, argc, argv);
 	p = ft_calloc(g_table.number_of_philosophers, sizeof(t_philo));
 	i = 0;
 	while (i < g_table.number_of_philosophers)
 	{
 		p[i].index = i;
+		p[i].eat_time = g_table.genesis;
+		p[i].left = &f[i];
+		if (i != (i + 1) % g_table.number_of_philosophers)
+			p[i].right = &f[(i + 1) % g_table.number_of_philosophers];
+		i++;
+	}
+	return (p);
+}
 
-		// printf("left : %d ", p[i].index);
-		p[i].left = &g_table.f[p[i].index];
+static t_fork	*init_fork(void)
+{
+	int				i;
+	t_fork			*f;
 
-		// printf("index : %d ", i);
+	f = ft_calloc(g_table.number_of_philosophers, sizeof(t_fork));
+	i = 0;
+	while (i < g_table.number_of_philosophers)
+	{
+		pthread_mutex_init(&(f[i].mutex), NULL);
+		i++;
+	}
+	return (f);
+}
 
-		// printf("right : %d\n", (p[i].index + 1) % g_table.number_of_philosophers);
-		p[i].right = &g_table.f[(p[i].index + 1) % g_table.number_of_philosophers];
+static int		init_table(int argc, char *argv[])
+{
+	if (!(argc == 5 || argc == 6))
+		return (0);
+	if ((g_table.number_of_philosophers = ft_atoi(argv[1])) < 2 ||
+		(g_table.time_to_die = ft_atoi(argv[2])) < 0 ||
+		(g_table.time_to_eat = ft_atoi(argv[3])) < 0 ||
+		(g_table.time_to_sleep = ft_atoi(argv[4])) < 0)
+		return (0);
+	if (argv[5])
+	{
+		if ((g_table.number_of_times_each_philosopher_must_eat =\
+			ft_atoi(argv[5])) < 1)
+			return (0);
+	}
+	g_table.genesis = get_time();
+	pthread_mutex_init(&(g_table.print), NULL);
+	return (1);
+}
 
+int				main(int argc, char *argv[])
+{
+	int				i;
+	t_fork			*f;
+	t_philo			*p;
+
+	if (!init_table(argc, argv))
+	{
+		write(2, "error\n", 6);
+		return (1);
+	}
+	f = init_fork();
+	p = init_philo(f);
+	i = 0;
+	while (i < g_table.number_of_philosophers)
+	{
 		pthread_create(&(p[i].thread), NULL, lifecycle, &p[i]);
 		i++;
 	}
-	destroy_philo(p);
-	destroy_table(&g_table);
+	dead_or_alive(p);
+	destroy(f, p);
 	return (0);
 }
