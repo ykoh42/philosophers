@@ -20,6 +20,9 @@
 # include <pthread.h>
 # include <semaphore.h>
 
+# define USLEEP 100
+# define DELAY 5
+
 enum				e_status {
 	INIT,
 	LEFTTAKING,
@@ -59,5 +62,5 @@ void				ft_msleep(time_t millisecond);
 time_t				get_time(void);
 void				*lifecycle(void *arg);
 int					print_status(t_philo *p, int status);
-void				dead_or_alive(void *arg);
+void				dead_or_alive(t_philo *p);
 #endif

@@ -66,7 +66,7 @@ int				main(int argc, char *argv[])
 
 	if (!init_table(argc, argv))
 	{
-		write(2, "error\n", 6);
+		write(2, "Error\n", 6);
 		return (1);
 	}
 	p = ft_calloc(g_table.number_of_philosophers, sizeof(t_philo));

@@ -36,13 +36,11 @@ static int	is_dead(t_philo *p)
 	return (0);
 }
 
-void		dead_or_alive(void *arg)
+void		dead_or_alive(t_philo *p)
 {
-	t_philo	*p;
 	int		*finish;
 	int		i;
 
-	p = arg;
 	finish = ft_calloc(g_table.number_of_philosophers, sizeof(int));
 	i = 0;
 	while (1)
@@ -59,8 +57,10 @@ void		dead_or_alive(void *arg)
 			print_status(NULL, END);
 			break ;
 		}
-		usleep(100);
+		usleep(USLEEP);
 		i++;
 	}
 	free(finish);
+	sem_post(g_table.forks);
+	sem_post(g_table.forks);
 }
