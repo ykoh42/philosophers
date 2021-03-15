@@ -15,24 +15,14 @@
 void			destroy(t_philo *p)
 {
 	int		i;
-	char	*name;
 
 	i = 0;
 	while (i < g_table.number_of_philosophers)
 		kill(p[i++].pid, SIGKILL);
 	free(p);
 	p = NULL;
-	i = 0;
-	while (i < g_table.number_of_philosophers)
-	{
-		name = get_name(i);
-		sem_unlink(name);
-		g_table.sem[i] = sem_open(name, O_CREAT | O_EXCL, 0755, 1);
-		sem_post(g_table.sem[i]);
-		free(name);
-		i++;
-	}
-	free(g_table.sem);
+	sem_close(g_table.sem);
+	sem_unlink("/sem");
 	sem_close(g_table.print);
 	sem_unlink("/print");
 	sem_close(g_table.forks);
@@ -43,9 +33,6 @@ void			destroy(t_philo *p)
 
 static void		init_semaphore(void)
 {
-	int		i;
-	char	*name;
-
 	sem_unlink("/the_same_time");
 	g_table.the_same_time = sem_open("/the_same_time", O_CREAT | O_EXCL, 0755,
 									g_table.number_of_philosophers / 2);
@@ -54,17 +41,9 @@ static void		init_semaphore(void)
 									g_table.number_of_philosophers);
 	sem_unlink("/print");
 	g_table.print = sem_open("/print", O_CREAT | O_EXCL, 0755, 1);
-	g_table.sem = ft_calloc(g_table.number_of_philosophers, sizeof(sem_t *));
-	i = 0;
-	while (i < g_table.number_of_philosophers)
-	{
-		name = get_name(i);
-		sem_unlink(name);
-		g_table.sem[i] = sem_open(name, O_CREAT | O_EXCL, 0755, 1);
-		sem_wait(g_table.sem[i]); // warning
-		free(name);
-		i++;
-	}
+	sem_unlink("/sem");
+	g_table.sem = sem_open("/sem", O_CREAT | O_EXCL, 0755, 0);
+
 }
 
 static int		init_table(int argc, char *argv[])
@@ -115,7 +94,7 @@ int				main(int argc, char *argv[])
 	if (i != g_table.number_of_philosophers)
 		lifecycle(&p[i]);
 	else
-		dead_or_alive(p);
+		check_processes(p);
 	destroy(p);
 	return (0);
 }

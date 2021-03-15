@@ -20,16 +20,42 @@ static void	eating(t_philo *p)
 	print_status(p, TAKING);
 	p->eat_time = get_time();
 	print_status(p, EATING);
-	ft_msleep(g_table.time_to_eat);
 	p->cnt++;
-	if (p->cnt == g_table.number_of_times_each_philosopher_must_eat)
-		sem_post(g_table.sem[p->index]);
+	if (g_table.number_of_times_each_philosopher_must_eat &&
+		p->cnt == g_table.number_of_times_each_philosopher_must_eat)
+		sem_post(g_table.sem);
+	ft_msleep(g_table.time_to_eat);
 	sem_post(g_table.forks);
 	sem_post(g_table.the_same_time);
 }
 
+static void	*dead_or_alive(void *arg)
+{
+	t_philo	*p;
+	int		i;
+
+	p = arg;
+	i = 0;
+	while (1)
+	{
+		if (i == g_table.number_of_philosophers)
+			i = 0;
+		if (g_table.time_to_die <= get_time() - p->eat_time)
+		{
+			print_status(p, DEAD);
+			return (0);
+		}
+		usleep(100);
+		i++;
+	}
+	return (0);
+}
+
 void		lifecycle(t_philo *p)
 {
+	pthread_t	th;
+
+	pthread_create(&th, NULL, dead_or_alive, p);
 	while (1)
 	{
 		eating(p);
@@ -37,4 +63,5 @@ void		lifecycle(t_philo *p)
 		ft_msleep(g_table.time_to_sleep);
 		print_status(p, THINKING);
 	}
+	pthread_join(th, NULL);
 }

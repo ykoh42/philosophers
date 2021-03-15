@@ -15,12 +15,9 @@
 void	print_status(t_philo *p, int status)
 {
 	sem_wait(g_table.print);
-	// if (status == END)
-		// return (end_status());
 	if (status == DEAD)
 	{
 		printf("%19ldms %10d died\n", get_time() - g_table.genesis, p->index + 1);
-		sem_post(g_table.print);
 		exit(DEAD);
 	}
 	else if (status == TAKING)

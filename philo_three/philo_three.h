@@ -28,11 +28,12 @@ typedef struct		s_table {
 	time_t			time_to_eat;
 	time_t			time_to_sleep;
 	int				number_of_times_each_philosopher_must_eat;
+	int				end;
 	time_t			genesis;
 	sem_t			*the_same_time;
 	sem_t			*forks;
 	sem_t			*print;
-	sem_t			**sem;
+	sem_t			*sem;
 }					t_table;
 
 typedef struct		s_philo {
@@ -51,6 +52,6 @@ time_t				get_time(void);
 void				lifecycle(t_philo *p);
 void				print_status(t_philo *p, int status);
 char				*get_name(int n);
-void				dead_or_alive(t_philo *p);
 void				destroy(t_philo *p);
+void				check_processes(t_philo *p);
 #endif
