@@ -15,13 +15,11 @@
 static int	dead(void)
 {
 	sem_post(g_table.forks);
-	sem_post(g_table.the_same_time);
 	return (DEAD);
 }
 
 static int	eating(t_philo *p)
 {
-	sem_wait(g_table.the_same_time);
 	sem_wait(g_table.forks);
 	if (print_status(p, TAKING) == DEAD)
 		return (dead());
@@ -33,7 +31,6 @@ static int	eating(t_philo *p)
 	p->cnt++;
 	ft_msleep(g_table.time_to_eat);
 	sem_post(g_table.forks);
-	sem_post(g_table.the_same_time);
 	return (0);
 }
 
@@ -42,6 +39,8 @@ void		*lifecycle(void *arg)
 	t_philo				*p;
 
 	p = arg;
+	if (p->index % 2)
+		ft_msleep(1);
 	while (1)
 	{
 		if (g_table.end)

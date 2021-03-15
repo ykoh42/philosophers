@@ -28,20 +28,15 @@ static void		destroy(t_philo *p)
 	sem_unlink("/print");
 	sem_close(g_table.forks);
 	sem_unlink("/forks");
-	sem_close(g_table.the_same_time);
-	sem_unlink("/the_same_time");
 }
 
 static void		init_semaphore(void)
 {
-	sem_unlink("/the_same_time");
-	g_table.the_same_time = sem_open("/the_same_time", O_CREAT | O_EXCL, 0755,
-									g_table.number_of_philosophers / 2);
 	sem_unlink("/forks");
-	g_table.forks = sem_open("/forks", O_CREAT | O_EXCL, 0755,
+	g_table.forks = sem_open("/forks", O_CREAT | O_EXCL, 0777,
 									g_table.number_of_philosophers);
 	sem_unlink("/print");
-	g_table.print = sem_open("/print", O_CREAT | O_EXCL, 0755, 1);
+	g_table.print = sem_open("/print", O_CREAT | O_EXCL, 0777, 1);
 }
 
 static int		init_table(int argc, char *argv[])

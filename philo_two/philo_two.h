@@ -40,7 +40,6 @@ typedef struct		s_table {
 	int				number_of_times_each_philosopher_must_eat;
 	int				end;
 	time_t			genesis;
-	sem_t			*the_same_time;
 	sem_t			*forks;
 	sem_t			*print;
 }					t_table;

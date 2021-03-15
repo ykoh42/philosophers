@@ -28,9 +28,7 @@ static int	is_finish(int *finish)
 
 static int	is_dead(t_philo *p)
 {
-	const time_t	timestamp = get_time();
-
-	if (g_table.time_to_die <= timestamp - p->eat_time)
+	if (g_table.time_to_die <= get_time() - p->eat_time)
 	{
 		print_status(p, DEAD);
 		return (1);
