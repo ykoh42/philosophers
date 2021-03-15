@@ -13,6 +13,9 @@
 #ifndef PHILO_ONE_H
 # define PHILO_ONE_H
 
+# define USLEEP 100
+# define DELAY 5
+
 # include <stdio.h>
 # include <string.h>
 # include <stdlib.h>

@@ -59,7 +59,7 @@ void		dead_or_alive(void *arg)
 			print_status(NULL, END);
 			break ;
 		}
-		usleep(100);
+		usleep(USLEEP);
 		i++;
 	}
 	free(finish);

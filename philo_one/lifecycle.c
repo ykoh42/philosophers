@@ -47,7 +47,7 @@ void		*lifecycle(void *arg)
 
 	p = arg;
 	if (p->index % 2)
-		ft_msleep(1);
+		ft_msleep(DELAY);
 	while (1)
 	{
 		if (g_table.end)
