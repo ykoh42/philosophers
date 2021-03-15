@@ -1,7 +1,6 @@
 # Philosophers
 > 식사하는 철학자 문제
 
-
 ## 주제
 이 프로젝트에서는 프로세스 스레딩의 기본 사항과 동일한 메모리 공간에서 작업하는 방법을 배웁니다. 스레드를을 만드는 방법을 배웁니다. 뮤텍스, 세마포어 및 공유 메모리에 대해 배웁니다.
 
@@ -20,13 +19,16 @@
 3. No Preemption : 다른 철학자의 젓가락을 강제로 뺏을 수 없음.
 4. Circular Wait : 모든 철학자들이 자신의 오른쪽에 앉은 철학자가 젓가락을 놓기를 기다림.
 
-## 해결 방법
+## 일반적인 해결 방법
 철학자는 스레드 혹은 프로세스, 젓가락은 공유 메모리(자원)을 상징한다.  
 deadlock의 발생 조건 4가지 중 하나만 해결하여도 deadlock을 해결할 수 있다. 
 <details>
 <summary>에츠허르 데이크스트라의 해결책은 다음과 같다.</summary>
 각각의 철학자를 P<sub>1</sub>, P<sub>2</sub>, P<sub>3</sub>, P<sub>4</sub>, P<sub>5</sub>라고 하고, 각 철학자의 왼쪽 포크를 f<sub>1</sub>, f<sub>2</sub>, f<sub>3</sub>, f<sub>4</sub>,f<sub>5</sub>라고 하자. P<sub>5</sub>를 제외한 네 명은 먼저 f<sub>n</sub>를 집은 후 f<sub>n+1</sub>를 집는 방식을 취한다. 그리고 P<sub>5</sub>는 이와 반대로, f<sub>1</sub>를 먼저 집은 후 f<sub>5</sub>를 집는다. 이것은 원래 방식의 대칭성을 제거하고, 따라서 교착 상태를 막을 수 있다.
 </details>
+
+## 이 프로젝트의 해결 방법
+철학자에게 강제적으로 비대칭성을 부여한다. 예를 들면, 홀수 철학자들은 짝수철학자들보다 포크를 1초 늦게 집게 한다.  
 
 ## 규칙 정의
 1. 철학자는 3가지 행동을 한다: 먹기, 자기, 생각하기
@@ -53,81 +55,19 @@ deadlock의 발생 조건 4가지 중 하나만 해결하여도 deadlock을 해�
 * 포크의 상태를 `mutex`로 보호한다.  
 * 각 철학자는 `thread`이다.
 
-### 허용 함수
-```c
-void	*memset(void *b, int c, size_t len);
-int		printf(const char * restrict format, ...);
-void	*malloc(size_t size);
-void	free(void *ptr);
-ssize_t	write(int fildes, const void *buf, size_t nbyte);
-int		usleep(useconds_t microseconds);
-int		gettimeofday(struct timeval *restrict tp, void *restrict tzp);
-int		pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
-int		pthread_detach(pthread_t thread);
-int		pthread_join(pthread_t thread, void **value_ptr);
-int		pthread_mutex_init(pthread_mutex_t *mutex, const pthread_mutexattr_t *attr);
-int		pthread_mutex_destroy(pthread_mutex_t *mutex);
-int		pthread_mutex_lock(pthread_mutex_t *mutex);
-int		pthread_mutex_unlock(pthread_mutex_t *mutex);
-```
-
-
-
-
-
-
-
-
 
 ## philo_two
-> 세마포어
+> thread, semaphore
+* 모든 포크가 테이블 중앙에 있다.
+* 포크의 상태를 저장하지 않고, 포크의 갯수를 `semaphore`로 나타내야한다. 
+* 각 철학자는 `thread`이다.
 
-### 허용 함수
-```c
-void	*memset(void *b, int c, size_t len);
-int		printf(const char * restrict format, ...);
-void	*malloc(size_t size);
-void	free(void *ptr);
-ssize_t	write(int fildes, const void *buf, size_t nbyte);
-int		usleep(useconds_t microseconds);
-int		gettimeofday(struct timeval *restrict tp, void *restrict tzp);
-int		pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
-int		pthread_detach(pthread_t thread);
-int		pthread_join(pthread_t thread, void **value_ptr);
-sem_t	*sem_open(const char *name, int oflag, ...);
-int		sem_close(sem_t *sem);
-int		sem_post(sem_t *sem);
-int		sem_wait(sem_t *sem);
-int		sem_unlink(const char *name);
-```
 
 ## philo_three
-> 프로세스 동기화
-큐활용(?)
-
-### 허용 함수
-```c
-void	*memset(void *b, int c, size_t len);
-int		printf(const char * restrict format, ...);
-void	*malloc(size_t size);
-void	free(void *ptr);
-ssize_t	write(int fildes, const void *buf, size_t nbyte);
-pid_t	fork(void);
-int		kill(pid_t pid, int sig);
-void	exit(int status);
-pid_t	waitpid(pid_t pid, int *stat_loc, int options);
-int		usleep(useconds_t microseconds);
-int		gettimeofday(struct timeval *restrict tp, void *restrict tzp);
-int		pthread_create(pthread_t *thread, const pthread_attr_t *attr, void *(*start_routine)(void *), void *arg);
-int		pthread_detach(pthread_t thread);
-int		pthread_join(pthread_t thread, void **value_ptr);
-sem_t	*sem_open(const char *name, int oflag, ...);
-int		sem_close(sem_t *sem);
-int		sem_post(sem_t *sem);
-int		sem_wait(sem_t *sem);
-int		sem_unlink(const char *name);
-```
-
+> process, semaphore
+* 모든 포크가 테이블 중앙에 있다.
+* 포크의 상태를 저장하지 않고, 포크의 갯수를 `semaphore`로 나타내야한다. 
+* 각 철학자는 `process`이다.
 
 ## 용어 정리
 1. Deadlock
