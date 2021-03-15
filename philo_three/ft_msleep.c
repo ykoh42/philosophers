@@ -20,6 +20,6 @@ void	ft_msleep(time_t millisecond)
 	{
 		if (millisecond < get_time() - base)
 			return ;
-		usleep(100);
+		usleep(USLEEP);
 	}
 }

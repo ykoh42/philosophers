@@ -1,3 +1,14 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   philo_three.h                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ykoh <ykoh@student.42seoul.kr>             +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2021/03/16 05:40:20 by ykoh              #+#    #+#             */
+/*   Updated: 2021/03/16 05:40:23 by ykoh             ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef PHILO_THREE_H
 # define PHILO_THREE_H
@@ -9,6 +20,9 @@
 # include <pthread.h>
 # include <semaphore.h>
 # include <signal.h>
+
+# define USLEEP 100
+# define DELAY 5
 
 enum				e_status {
 	INIT,
@@ -30,7 +44,6 @@ typedef struct		s_table {
 	int				number_of_times_each_philosopher_must_eat;
 	int				end;
 	time_t			genesis;
-	sem_t			*the_same_time;
 	sem_t			*forks;
 	sem_t			*print;
 	sem_t			*sem;
@@ -51,7 +64,6 @@ void				ft_msleep(time_t millisecond);
 time_t				get_time(void);
 void				lifecycle(t_philo *p);
 void				print_status(t_philo *p, int status);
-char				*get_name(int n);
 void				destroy(t_philo *p);
 void				check_processes(t_philo *p);
 #endif

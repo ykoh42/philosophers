@@ -25,22 +25,22 @@ static void	*is_dead(void *arg)
 		if (i == g_table.number_of_philosophers)
 			i = 0;
 		if (g_table.end)
-			return (0);		
+			return (0);
 		if (p[i].pid == waitpid(p[i].pid, &exit_status, WNOHANG))
 		{
 			if (exit_status / 256 == DEAD)
 			{
-				destroy(p); // 죽어도 출력하면 바로 exit
+				destroy(p);
 				exit(0);
 			}
 		}
-		usleep(100);
+		usleep(USLEEP);
 		i++;
 	}
 	return (0);
 }
 
-void	check_processes(t_philo *p)
+void		check_processes(t_philo *p)
 {
 	pthread_t	th;
 	int			i;

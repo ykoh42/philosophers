@@ -4,7 +4,7 @@ SRCS		=	main.c\
 			ft_msleep.c\
 			get_time.c\
 			lifecycle.c\
-			dead_or_alive.c\
+			check_processes.c\
 			print_status.c
 
 OBJS		=	$(SRCS:.c=.o)

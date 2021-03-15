@@ -14,9 +14,9 @@
 
 static void	eating(t_philo *p)
 {
-	sem_wait(g_table.the_same_time);
 	sem_wait(g_table.forks);
 	print_status(p, TAKING);
+	sem_wait(g_table.forks);
 	print_status(p, TAKING);
 	p->eat_time = get_time();
 	print_status(p, EATING);
@@ -26,27 +26,24 @@ static void	eating(t_philo *p)
 		sem_post(g_table.sem);
 	ft_msleep(g_table.time_to_eat);
 	sem_post(g_table.forks);
-	sem_post(g_table.the_same_time);
+	sem_post(g_table.forks);
 }
 
 static void	*dead_or_alive(void *arg)
 {
 	t_philo	*p;
-	int		i;
 
 	p = arg;
-	i = 0;
+	if (p->index % 2)
+		ft_msleep(DELAY);
 	while (1)
 	{
-		if (i == g_table.number_of_philosophers)
-			i = 0;
 		if (g_table.time_to_die <= get_time() - p->eat_time)
 		{
 			print_status(p, DEAD);
 			return (0);
 		}
-		usleep(100);
-		i++;
+		usleep(USLEEP);
 	}
 	return (0);
 }
