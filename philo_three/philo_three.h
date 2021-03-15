@@ -21,8 +21,8 @@
 # include <semaphore.h>
 # include <signal.h>
 
-# define USLEEP 100
-# define DELAY 5
+# define USLEEP 500
+# define DELAY 10
 
 enum				e_status {
 	INIT,
