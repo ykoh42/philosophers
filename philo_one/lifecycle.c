@@ -46,7 +46,7 @@ void		*lifecycle(void *arg)
 	t_philo				*p;
 
 	p = arg;
-	if (!(p->index % 2))
+	if (p->index % 2)
 		ft_msleep(1);
 	while (1)
 	{
