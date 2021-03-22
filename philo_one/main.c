@@ -74,9 +74,9 @@ static int		init_table(int argc, char *argv[])
 	if (!(argc == 5 || argc == 6))
 		return (0);
 	if ((g_table.number_of_philosophers = ft_atoi(argv[1])) < 2 ||
-		(g_table.time_to_die = ft_atoi(argv[2])) < 0 ||
-		(g_table.time_to_eat = ft_atoi(argv[3])) < 0 ||
-		(g_table.time_to_sleep = ft_atoi(argv[4])) < 0)
+		(g_table.time_to_die = ft_atoi(argv[2])) <= 0 ||
+		(g_table.time_to_eat = ft_atoi(argv[3])) <= 0 ||
+		(g_table.time_to_sleep = ft_atoi(argv[4])) <= 0)
 		return (0);
 	if (argv[5])
 	{
